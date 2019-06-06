@@ -2418,6 +2418,8 @@ class laser_gcode(inkex.Effect):
         self.OptionParser.add_option("-d", "--directory",                       action="store", type="string",          dest="directory",                           default="",                             help="Output directory")
         self.OptionParser.add_option("-f", "--filename",                        action="store", type="string",          dest="file",                                default="output.gcode",                 help="File name")
         self.OptionParser.add_option("",   "--add-numeric-suffix-to-filename",  action="store", type="inkbool",         dest="add_numeric_suffix_to_filename",      default=False,                          help="Add numeric suffix to file name")
+        self.OptionParser.add_option("",   "--laser-offset-x",                  action="store", type="float",           dest="laser_offset_x",                      default="0",                          help="Laser x offset")
+        self.OptionParser.add_option("",   "--laser-offset-y",                  action="store", type="float",           dest="laser_offset_y",                      default="0",                          help="Laser y offset")
         self.OptionParser.add_option("",   "--laser-command",                   action="store", type="string",          dest="laser_command",                       default="M03",                      help="Laser gcode command")
         self.OptionParser.add_option("",   "--laser-off-command",               action="store", type="string",          dest="laser_off_command",                   default="M05",                         help="Laser gcode end command")
         self.OptionParser.add_option("",   "--laser-speed",                     action="store", type="int",             dest="laser_speed",                         default="100",                          help="Laser speed (mm/min)")
@@ -2623,7 +2625,11 @@ class laser_gcode(inkex.Effect):
             s = [" X", " Y", " Z", " I", " J", " K"]
             r = ''
             for i in range(6):
-                if c[i]!=None:
+                if i == 0 and c[i]!=None:
+                    r += s[i] + ("%f" % (round(c[i]-self.options.laser_offset_x,4))).rstrip('0')
+                elif i == 1 and c[i]!=None:
+                    r += s[i] + ("%f" % (round(c[i]-self.options.laser_offset_y,4))).rstrip('0')
+                elif c[i]!=None:
                     r += s[i] + ("%f" % (round(c[i],4))).rstrip('0')
             return r
 
